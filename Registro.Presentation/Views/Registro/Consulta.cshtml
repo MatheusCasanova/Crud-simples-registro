@@ -1,0 +1,73 @@
+﻿@* classe de modelo utilizada nesta página*@
+@model Registro.Presentation.Models.PessoaConsultaViewModel
+
+<h5>Cadastro de Registro</h5>
+<p>
+    Preenche os campos para consultar um registro
+</p>
+<hr/>
+
+@using (Html.BeginForm())
+{
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <label>Nome:</label>           
+            @Html.TextBoxFor(model => model.Nome,
+                new { @case = "form-control"})
+                <br/>
+            <span class="text-danger">
+                @Html.ValidationMessageFor(model => model.Nome)
+            </span>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <input type="submit" value="Pesquisar Registros" class="btn btn-success" />
+        </div>
+    </div>
+}  
+
+@if (Model != null && Model.Pessoas != null && Model.Pessoas.Count > 0)
+{
+    <table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>CPF</th>
+            <th>Nascimento</th>
+            <th>Operações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Pessoas)
+        {      
+            <tr>
+                <td>@item.Nome</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>@item.Cpf</td>
+                <td>@Convert.ToDateTime(item.DataNascimento).ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a href="/Registro/Edicao?id=@item.Id" class="btn btn-primary btn-sm">Alterar</a>
+                    <a href="/Registro/Exclusao?id=@item.Id"
+                        onclick="return confirm('Deseja realmente excluir o registro: @item.Nome?');"
+                        class="btn btn-danger btn-sm">Excluir
+                    </a>
+                </td>
+            </tr>
+          }
+    </tbody>       
+        <tfoot>
+        <tr>
+            <td colspan="5">
+                Quantidade de registros: @Model.Pessoas.Count
+            </td>
+        </tr>
+    </tfoot>
+</table>
+}
