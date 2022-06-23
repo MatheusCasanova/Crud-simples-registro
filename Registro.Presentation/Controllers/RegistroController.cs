@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Registro.Presentation.Models;
 using RegistroWeb.Infra.Data.Entities;
 using RegistroWeb.Infra.Data.Interfaces;
 
 namespace Registro.Presentation.Controllers
 {
+    [Authorize]
     public class RegistroController : Controller
     {
         //atributo
@@ -27,6 +30,10 @@ namespace Registro.Presentation.Controllers
             {
                 try
                 {
+                    //ler o usuário autenticado na sessão
+                    var json = HttpContext.Session.GetString("usuario");
+                    var usuario = JsonConvert.DeserializeObject<UserIdentityModel>(json);
+
                     var pessoa = new Pessoa
                     {
                         Id = Guid.NewGuid(),
@@ -34,7 +41,8 @@ namespace Registro.Presentation.Controllers
                         Cpf = model.Cpf,
                         Rg = model.Rg,
                         DataNascimento = Convert.ToDateTime(model.DataNascimento),
-                        Sexo = Convert.ToInt32(model.Sexo)
+                        Sexo = Convert.ToInt32(model.Sexo),
+                        IdUsuario = usuario.Id // foreign key
                     };
 
                     //gravando no banco de dados
@@ -68,8 +76,12 @@ namespace Registro.Presentation.Controllers
             {
                 try
                 {
+                    //ler o usuário autenticado em sessão
+                    var json = HttpContext.Session.GetString("usuario");
+                    var usuario = JsonConvert.DeserializeObject<UserIdentityModel>(json);
+
                     //realizando a consulta de pessoas
-                    model.Pessoas = _pessoaRepository.GetByNome(model.Nome);
+                    model.Pessoas = _pessoaRepository.GetByNome(model.Nome, usuario.Id);
 
                     //verificando se alguma pessoa foi encontrada
                     if(model.Pessoas.Count > 0)
@@ -126,11 +138,16 @@ namespace Registro.Presentation.Controllers
                 {
                     var pessoa = _pessoaRepository.GetById(model.Id);
 
+                    //ler o usuário autenticado na sessão
+                    var json = HttpContext.Session.GetString("usuario");
+                    var usuario = JsonConvert.DeserializeObject<UserIdentityModel>(json);
+
                     pessoa.Nome = model.Nome;
                     pessoa.Cpf = model.Cpf;
                     pessoa.Rg = model.Rg;
                     pessoa.DataNascimento = Convert.ToDateTime(model.DataNascimento);
                     pessoa.Sexo = Convert.ToInt32(model.Sexo);
+                    pessoa.IdUsuario = usuario.Id;
 
                     _pessoaRepository.Update(pessoa);
 

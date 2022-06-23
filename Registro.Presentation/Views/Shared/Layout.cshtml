@@ -1,4 +1,18 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using Registro.Presentation.Models
+
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAcessor
+
+@{
+    //ler o conteúdo json gravado na sessão
+    var json = HttpContextAcessor.HttpContext.Session.GetString("usuario");
+
+    //deserializar o conteudo json
+    var usuario = JsonConvert.DeserializeObject<UserIdentityModel>(json);
+}
+
+@{
     Layout = null;
 }
 
@@ -40,7 +54,28 @@
                             <li><a class="dropdown-item" href="/Registro/Relatorio">Relatório de Registros</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/Account/UserData">
+                            Minha Conta
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-secondary" aria-current="page" href="/Account/Logout"
+                            onclick="return confirm('Deseja realmente sair do sistema?');">
+                            Sair do Sistema
+                        </a>
+                    </li>
                 </ul>
+
+                <form class="d-flex">
+                    <span class="text-white">Usuário:</span>
+                    &nbsp;
+                    <strong class="text-white">
+                        @usuario.Nome
+                    </strong>
+                    &nbsp;&nbsp;
+                </form>
+
             </div>
         </div>
     </nav>

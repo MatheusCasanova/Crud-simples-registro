@@ -9,6 +9,6 @@ namespace RegistroWeb.Infra.Data.Interfaces
 {
     public interface IPessoaRepository : IBaseRepository<Pessoa>
     {
-        List<Pessoa> GetByNome(string nome);
+        List<Pessoa> GetByNome(string nome, Guid idUsuario);
     }
 }

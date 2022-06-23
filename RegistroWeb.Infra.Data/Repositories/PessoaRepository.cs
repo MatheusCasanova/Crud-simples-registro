@@ -24,8 +24,8 @@ namespace RegistroWeb.Infra.Data.Repositories
         public void Create(Pessoa obj)
         {
             var query = @"
-                INSERT INTO PESSOA(ID, NOME, CPF, RG, DATANASCIMENTO, SEXO)
-                VALUES(@Id, @Nome, @Cpf, @Rg, @DataNascimento, @Sexo)
+                INSERT INTO PESSOA(ID, NOME, CPF, RG, DATANASCIMENTO, SEXO, IDUSUARIO)
+                VALUES(@Id, @Nome, @Cpf, @Rg, @DataNascimento, @Sexo, @IdUsuario)
             ";
 
             //conectando no banco de dados
@@ -99,18 +99,18 @@ namespace RegistroWeb.Infra.Data.Repositories
             }
         }
 
-        public List<Pessoa> GetByNome(string nome)
+        public List<Pessoa> GetByNome(string nome, Guid idUsuario)
         {
             var query = @"
                 SELECT * FROM PESSOA
-                WHERE NOME = @nome
+                WHERE NOME = @nome AND IDUSUARIO = @idUsuario
                 ORDER BY NOME ASC
             ";
 
             using(var connection = new SqlConnection(_connectionString))
             {
                 return connection
-                    .Query<Pessoa>(query, new { nome })
+                    .Query<Pessoa>(query, new { nome, idUsuario })
                     .ToList();
             }
         }

@@ -6,23 +6,24 @@ using System.Threading.Tasks;
 
 namespace RegistroWeb.Infra.Data.Entities
 {
-    public class Pessoa
+    /// <summary>
+    /// Classe de entidade para Usuario
+    /// </summary>
+    public class Usuario
     {
         #region Propriedades
 
         public Guid Id { get; set; }
         public string Nome { get; set; }
-        public string Cpf { get; set; }
-        public string Rg { get; set; }
-        public DateTime DataNascimento { get; set; }
-        public int Sexo { get; set; }
-        public Guid IdUsuario { get; set; }
+        public string Email { get; set; }
+        public string Senha { get; set; }
+        public DateTime DataInclusao { get; set; }
 
         #endregion
 
         #region Relacionamentos
 
-        public Usuario? Usuario { get; set; }
+        public List<Pessoa>? Pessoas { get; set; }
 
         #endregion
     }
